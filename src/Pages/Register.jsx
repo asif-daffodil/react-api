@@ -38,7 +38,7 @@ const Register = () => {
 
                     <form className="mt-12" onSubmit={handleSubmit(onSubmit)}>
                         <h3 className="text-xl font-bold text-blue-600 mb-6 text-center">Create free account</h3>
-                        <div className="space-y-4">
+                        <div className="space-y-4">                                                                                                                                                                                                                                                                                                      
                             <input {...register("name", {
                                 required: {
                                     value: true,
