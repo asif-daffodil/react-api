@@ -1,29 +1,32 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router";
-import useAuth from "../Hook/useAuth";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
-import { useCookies } from "react-cookie";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../slices/userSlice";
 
 const Header = () => {
-    const [cookies, setCookie, removeCookie] = useCookies(['userToken']);
-    const { isLoggedIn, user } = useAuth();
     const [showMenu, setShowMenu] = useState("hidden");
+    const user = useSelector(state => state.user.user);
+    const token = useSelector(state => state.user.token);
+    const dispatch = useDispatch();
     const mutation = useMutation({
         mutationFn: async (formData) => {
             const res = await axios.post('http://127.0.0.1:8000/api/logout', "", {
                 headers: {
                     Accept: "application/json",
-                    Authorization: `Bearer ${cookies.userToken}`,
+                    Authorization: `Bearer ${token}`,
                 },
             });
             return res.data;
         },
         onSuccess: () => {
-            removeCookie('userToken');
+            dispatch(logout());
             toast.success('Logout successful');
+            setTimeout(() => {
             navigate('/login');
+            }, 2000);
         },
         onError: (err) => {
             console.error(err);
@@ -39,13 +42,13 @@ const Header = () => {
     }
 
     const navigate = useNavigate();
-    const logout = () => {
+    const logoutUser = () => {
         mutation.mutate();
     }
 
     return (
         <header className='flex shadow-md py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide relative z-50'>
-            <ToastContainer />
+            <ToastContainer autoClose={1000} />
             <div className='flex flex-wrap items-center justify-between gap-5 w-full'>
                 <a href="#" className="max-sm:hidden"><img src="https://readymadeui.com/readymadeui.svg" alt="logo" className='w-36' /></a>
                 <a href="#" className="hidden max-sm:block"><img src="https://readymadeui.com/readymadeui-short.svg" alt="logo" className='w-9' /></a>
@@ -86,7 +89,7 @@ const Header = () => {
                 </div>
 
                 <div className='flex max-lg:ml-auto space-x-4'>
-                    {!isLoggedIn && (
+                    {!user && (
                         <>
                             <button
                                 className='px-4 py-2 text-sm rounded-full font-bold text-gray-500 border-2 bg-transparent hover:bg-gray-50 transition-all ease-in-out duration-300' onClick={() => navigate("/login")}>Login</button>
@@ -94,7 +97,7 @@ const Header = () => {
                                 className='px-4 py-2 text-sm rounded-full font-bold text-white border-2 border-[#007bff] bg-[#007bff] transition-all ease-in-out duration-300 hover:bg-transparent hover:text-[#007bff]' onClick={() => navigate("/register")}>Register</button>
                         </>
                     )}
-                    {isLoggedIn && (
+                    {user && (
                         <div className="relative flex items-center gap-3">
                             <div className="relative">
                                 <button className="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none" onClick={()=> showMenu == "hidden" ? setShowMenu(""):setShowMenu("hidden") }>
@@ -134,7 +137,7 @@ const Header = () => {
                                         </li>
                                         <li>
                                             <button
-                                                onClick={logout}
+                                                onClick={logoutUser}
                                                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                                             >
                                                 Logout

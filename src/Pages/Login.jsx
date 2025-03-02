@@ -1,14 +1,20 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { useCookies } from "react-cookie";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
+import { useSelector, useDispatch } from "react-redux";
+import { login } from "../slices/userSlice";
+import { useEffect } from "react";
 
 const Login = () => {
-    const { register, handleSubmit, formState: { errors }, reset } = useForm();
-    const [cookies, setCookie, removeCookie] = useCookies(['userToken']);
+    const user = useSelector(state => state.user.user);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    useEffect(() => {
+        user && navigate('/');
+    }, [user]);
+    const { register, handleSubmit, formState: { errors }, reset } = useForm();
     const mutation = useMutation({
         mutationFn: async (formData) => {
             const res = await axios.post('http://127.0.0.1:8000/api/login', formData);
@@ -16,7 +22,7 @@ const Login = () => {
         },
         onSuccess: (res) => {
             toast.success('Login successful', {duration: 1500});
-            setCookie('userToken', res.access_token);
+            dispatch(login({user: res.user, role: res.user.role, token: res.access_token}));
             reset();
             
             setTimeout(() => {
@@ -33,7 +39,7 @@ const Login = () => {
     };
     return (
         <div className="font-[sans-serif] max-w-7xl mx-auto h-screen">
-            <ToastContainer />
+            <ToastContainer autoClose={1000} />
             <div className="grid md:grid-cols-2 items-center gap-8 h-full">
                 <form className="max-w-lg max-md:mx-auto w-full p-6" onSubmit={handleSubmit(onSubmit)}>
                     <div className="mb-12">

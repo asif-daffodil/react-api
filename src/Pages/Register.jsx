@@ -27,7 +27,7 @@ const Register = () => {
     };
     return (
         <div className="font-[sans-serif] p-4 mt-6">
-            <ToastContainer />
+            <ToastContainer autoClose={1000} />
             <div className="flex flex-col justify-center">
                 <div className="max-w-md w-full mx-auto shadow-[0_2px_10px_-2px_rgba(195,169,50,0.5)] p-8 relative mt-12">
                     <div className="bg-white w-24 h-24 border-[8px] p-4 absolute left-0 right-0 mx-auto -top-12 rounded-full overflow-hidden">
