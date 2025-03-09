@@ -6,6 +6,9 @@ import Blog from './Pages/Blog';
 import Contact from './Pages/Contact';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
+import AdminLayout from './Layouts/AdminLayout';
+import Dashboard from './Pages/AdminPanel/Dashboard';
+import Products from './Pages/AdminPanel/Products';
 
 const AllRoutes = () => {
     return (
@@ -17,6 +20,12 @@ const AllRoutes = () => {
             <Route path='/contact' element={<Contact />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+          </Route>
+          <Route element={<AdminLayout />}>
+            <Route path='/admin'>
+              <Route index element={<Dashboard />} />
+              <Route path='/admin/products' element={<Products />} />
+            </Route>
           </Route>
         </Routes>
     );

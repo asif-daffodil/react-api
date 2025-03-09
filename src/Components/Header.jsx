@@ -10,6 +10,7 @@ const Header = () => {
     const [showMenu, setShowMenu] = useState("hidden");
     const user = useSelector(state => state.user.user);
     const token = useSelector(state => state.user.token);
+    const role = useSelector(state => state.user.role);
     const dispatch = useDispatch();
     const mutation = useMutation({
         mutationFn: async (formData) => {
@@ -135,6 +136,16 @@ const Header = () => {
                                                 Change Password
                                             </button>
                                         </li>
+                                        {role == "admin" && (
+                                        <li>
+                                            <button
+                                                onClick={() => navigate('/admin')}
+                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                            >
+                                                Admin Panel
+                                            </button>
+                                        </li>
+                                        )}
                                         <li>
                                             <button
                                                 onClick={logoutUser}
